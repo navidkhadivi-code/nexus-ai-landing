@@ -167,7 +167,7 @@ const T: Record<string, { en: string; fa: string }> = {
   faqK: { en: 'FAQ', fa: 'سوالات متداول' },
   faqH: { en: 'QUESTIONS, ANSWERED HONESTLY.', fa: 'صادقانه پاسخ میدهیم.' },
   faqData: {
-    en: 'What is PersianTrade?|PersianTrade is an AI-powered crypto trading intelligence platform: real-time data, specialized agents, weighted consensus, a risk engine with veto power, paper trading and backtesting in one workspace.;Does it guarantee profits?|No. It is an analysis and intelligence platform. Markets are uncertain and no system can guarantee profits.;Does it use real market data?|Yes — live public feeds from Binance, Bybit and OKX. If data goes stale, the system says so and stops new signals.;Can I use it without live trading?|Yes — that is the default. Analysis, signals, paper trading and backtesting need no exchange connection.;Does AI execute trades automatically?|No. AI never sends orders directly. Every trade passes ARES and requires explicit user action.;Which exchanges?|Binance, Bybit and OKX today; new exchanges can be added through the adapter architecture.;Are withdrawal permissions required?|No. Withdrawal permission is never required — and never asked for.',
+    en: 'What is PersianTrade?|PersianTrade is an AI-powered crypto trading intelligence platform: real-time data, specialized agents, weighted consensus, a risk engine with veto power, paper trading and backtesting in one workspace.;Does it guarantee profits?|No. It is an analysis and intelligence platform. Markets are uncertain and no system can guarantee profits.;Does it use real market data?|Yes — live public feeds from Binance, Bybit and OKX. If data goes stale, the system says so and stops new signals.;Can I use it without live trading?|Yes — that is the default. Analysis, signals, paper trading and backtesting need no exchange connection.;Does AI execute trades automatically?|No. AI never sends orders directly. Every trade passes ARES and requires explicit user action.;Which exchanges?|Binance, Bybit and OKX today — new exchanges can be added through the adapter architecture.;Are withdrawal permissions required?|No. Withdrawal permission is never required — and never asked for.',
     fa: 'پرشین‌ترید چیست؟|پلتفرم هوش معاملاتی کریپتو: داده لحظه‌ای، ایجنت‌های تخصصی، اجماع وزنی، موتور ریسک با حق وتو، معامله کاغذی و بک‌تست در یک فضای کاری.;سود تضمین میکند؟|خیر. این یک پلتفرم تحلیل و هوش معاملاتی است. بازار عدم‌قطعیت دارد و هیچ سیستمی سود تضمین نمیکند.;از داده واقعی استفاده میکند؟|بله — فید عمومی زنده بایننس، بای‌بیت و OKX. اگر داده قدیمی شود، سیستم اعلام میکند و صدور سیگنال متوقف میشود.;بدون معامله واقعی قابل استفاده است؟|بله — پیش‌فرض همین است. تحلیل، سیگنال، پیپر و بک‌تست بدون اتصال صرافی کار میکنند.;هوش مصنوعی خودش معامله اجرا میکند؟|خیر. AI مستقیم سفارش نمی‌فرستد. هر معامله اول از آرس عبور میکند و نیاز به اقدام صریح کاربر دارد.;چه صرافی‌هایی؟|امروز Binance، Bybit و OKX؛ با معماری آداپتور، صرافی جدید بدون بازنویسی اضافه میشود.;مجوز برداشت لازم دارد؟|خیر. مجوز برداشت هرگز لازم نیست و درخواست نمیشود.',
   },
 
@@ -176,7 +176,7 @@ const T: Record<string, { en: string; fa: string }> = {
   disclaimer: { en: 'PersianTrade provides market analysis, trading intelligence and technology tools. It does not guarantee profits or investment returns. Cryptocurrency trading involves significant risk. Users are responsible for their own trading decisions.', fa: 'پرشین‌ترید ابزار تحلیل بازار، هوش معاملاتی و فناوری ارائه میدهد و سود یا بازده سرمایه را تضمین نمیکند. معامله ارز دیجیتال ریسک قابل‌توجهی دارد و مسئولیت تصمیمات معاملاتی با کاربر است.' },
 };
 
-function useLang(): [L, (l: L) => void, (k: string) => string, (s: string) => string[]] {
+function useLang(): [L, (l: L) => void, (k: string) => string, (s: string) => string[], (k: string) => string[][]] {
   const [lang, setLang] = useState<L>(() => { try { return localStorage.getItem('pt_lang') === 'en' ? 'en' : 'fa'; } catch { return 'fa'; } });
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -185,7 +185,8 @@ function useLang(): [L, (l: L) => void, (k: string) => string, (s: string) => st
   }, [lang]);
   const t = (k: string) => (T[k] ? T[k][lang] : k);
   const tl = (k: string) => t(k).split('|');
-  return [lang, setLang, t, tl];
+  const tr = (k: string) => t(k).split(';').map(r => r.split('|'));
+  return [lang, setLang, t, tl, tr];
 }
 
 function Reveal({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -312,8 +313,8 @@ function HowItWorks({ t, tl }: any) {
   );
 }
 
-function Agents({ t, tl }: any) {
-  const agents = tl('agentsData').map((row: string) => { const [n, r, a] = row.split('|'); return { n, r, a: a.split(',') }; });
+function Agents({ t, tr }: any) {
+  const agents = tr('agentsData').map(([n, r, a]: string[]) => ({ n, r, a: a.split(',') }));
   return (
     <section id="ai" className="sec alt">
       <div className="wrap">
@@ -335,8 +336,8 @@ function Agents({ t, tl }: any) {
   );
 }
 
-function Perspectives({ t, tl }: any) {
-  const rows = tl('agentsData').slice(0, 7).map((row: string) => { const [n, r] = row.split('|'); return [n, r]; });
+function Perspectives({ t, tr }: any) {
+  const rows = tr('agentsData').slice(0, 7).map(([n, r]: string[]) => [n, r]);
   return (
     <section className="sec">
       <div className="wrap">
@@ -496,8 +497,8 @@ function Live({ t, tl }: any) {
   );
 }
 
-function Security({ t, tl }: any) {
-  const cards = tl('secCards').map((row: string) => row.split('|'));
+function Security({ t, tr }: any) {
+  const cards = tr('secCards');
   return (
     <section className="sec alt">
       <div className="wrap">
@@ -509,8 +510,8 @@ function Security({ t, tl }: any) {
   );
 }
 
-function WhoFor({ t, tl }: any) {
-  const cards = tl('whoCards').map((row: string) => row.split('|'));
+function WhoFor({ t, tr }: any) {
+  const cards = tr('whoCards');
   return (
     <section className="sec">
       <div className="wrap">
@@ -542,8 +543,8 @@ function Advantage({ t, tl }: any) {
   );
 }
 
-function Workflow({ t, tl }: any) {
-  const steps = tl('wfSteps').map((row: string) => row.split('|'));
+function Workflow({ t, tr }: any) {
+  const steps = tr('wfSteps');
   return (
     <section className="sec">
       <div className="wrap">
@@ -610,9 +611,9 @@ function FinalCTA({ t }: any) {
   );
 }
 
-function Faq({ t, tl }: any) {
+function Faq({ t, tr }: any) {
   const [open, setOpen] = useState<number | null>(0);
-  const items = tl('faqData').map((row: string) => row.split('|'));
+  const items = tr('faqData');
   return (
     <section id="faq" className="sec alt">
       <div className="wrap narrow">
@@ -648,12 +649,12 @@ function Foot({ t, tl }: any) {
 }
 
 export default function App() {
-  const [lang, setLang, t, tl] = useLang();
+  const [lang, setLang, t, tl, tr] = useLang();
   return (
     <>
       <Header lang={lang} setLang={setLang} t={t} />
       <main>
-        <Hero t={t} /><WhatIs t={t} /><Problem t={t} tl={tl} /><HowItWorks t={t} tl={tl} /><Agents t={t} tl={tl} /><Perspectives t={t} tl={tl} /><NoTrade t={t} tl={tl} /><Risk t={t} tl={tl} /><RealData t={t} tl={tl} /><SeeBeyond t={t} tl={tl} /><MultiTF t={t} tl={tl} /><Paper t={t} tl={tl} /><Backtest t={t} tl={tl} /><Live t={t} tl={tl} /><Security t={t} tl={tl} /><WhoFor t={t} tl={tl} /><Advantage t={t} tl={tl} /><Workflow t={t} tl={tl} /><Shots t={t} /><FinalCTA t={t} /><Faq t={t} tl={tl} />
+        <Hero t={t} /><WhatIs t={t} /><Problem t={t} tl={tl} /><HowItWorks t={t} tl={tl} /><Agents t={t} tr={tr} /><Perspectives t={t} tr={tr} /><NoTrade t={t} tl={tl} /><Risk t={t} tl={tl} /><RealData t={t} tl={tl} /><SeeBeyond t={t} tl={tl} /><MultiTF t={t} tl={tl} /><Paper t={t} tl={tl} /><Backtest t={t} tl={tl} /><Live t={t} tl={tl} /><Security t={t} tr={tr} /><WhoFor t={t} tr={tr} /><Advantage t={t} tl={tl} /><Workflow t={t} tr={tr} /><Shots t={t} /><FinalCTA t={t} /><Faq t={t} tr={tr} />
       </main>
       <Foot t={t} tl={tl} />
     </>
