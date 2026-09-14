@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { backtest, DEFAULT_BT, type BtMetrics } from './engine/backtest';
+import type { Candle } from './engine/types';
 
 const TERMINAL = 'https://ai.ipeset.com';
 type L = 'en' | 'fa';
@@ -122,7 +124,13 @@ const T: Record<string, { en: string; fa: string }> = {
   btH: { en: 'TURN IDEAS INTO DATA.', fa: 'ایده‌ها را به داده تبدیل کن.' },
   btLead: { en: 'Test strategies against historical market conditions and evaluate performance through measurable metrics.', fa: 'استراتژی را روی شرایط تاریخی بازار بسنج و با متریک‌های قابل‌اندازه‌گیری ارزیابی کن.' },
   btMetrics: { en: 'WIN RATE|PROFIT FACTOR|MAX DRAWDOWN|EXPECTANCY|SHARPE RATIO|NUMBER OF TRADES', fa: 'وین‌ریت|ضریب سود|بیشترین افت|امید ریاضی|شارپ|تعداد معامله' },
-  exampleTag: { en: 'EXAMPLE ANALYTICS — placeholder metrics only. PersianTrade never displays fabricated results.', fa: 'نمونه متریک — فقط جای‌نمایش. پرشین‌ترید هرگز نتیجه ساختگی نمایش نمی‌دهد.' },
+  exampleTag: { en: 'LIVE COMPUTED — these metrics are calculated right now in your browser from 1000 real 15-minute BTCUSDT candles (Binance public data) using the same event-driven engine as the terminal. Past results never guarantee future profit.', fa: 'محاسبه زنده — این متریک‌ها همین حالا در مرورگر شما روی ۱۰۰ کندل واقعی ۱ دقیقه BTCUSDT (داده عمومی بایننس) با همان موتور رویدادمحور پنل محاسبه میشوند. نتایج گذشته هرگز سود آینده را تضمین نمیکنند.' },
+  liveBadge: { en: '● LIVE FROM REAL DATA', fa: '● زنده از داده واقعی' },
+  lastCalc: { en: 'last calculation', fa: 'آخرین محاسبه' },
+  recalc: { en: 'RECALCULATE', fa: 'محاسبه مجدد' },
+  liveFail: { en: 'DATA UNAVAILABLE — could not reach the public exchange feed', fa: 'داده در دسترس نیست — اتصال به فید عمومی صرافی برقرار نشد' },
+  computing: { en: 'computing from live data…', fa: 'در حال محاسبه از داده زنده…' },
+  symbolLabel: { en: 'BTCUSDT · 15m · 1000 candles · fees+slippage included', fa: 'BTCUSDT · ۱۵ دقیقه · ۱۰۰۰ کندل · با کارمزد و اسلیپیج' },
 
   liveK: { en: 'LIVE TRADING — OPTIONAL', fa: 'معامله واقعی — اختیاری' },
   liveH: { en: 'FROM ANALYSIS TO EXECUTION. WHEN YOU ARE READY.', fa: 'از تحلیل تا اجرا. وقتی آماده‌ای.' },
@@ -482,12 +490,67 @@ function Paper({ t, tl }: any) {
 }
 
 function Backtest({ t, tl }: any) {
+  const [m, setM] = useState<BtMetrics | null>(null);
+  const [fail, setFail] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [at, setAt] = useState<number>(0);
+
+  const run = async () => {
+    setBusy(true); setFail(false);
+    try {
+      const r = await fetch('https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=1000');
+      if (!r.ok) throw new Error(String(r.status));
+      const kl = await r.json();
+      const candles: Candle[] = kl.map((k: any[]) => ({ t: k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5], q: +k[7] }));
+      const res = backtest(candles, DEFAULT_BT);
+      setM(res.metrics); setAt(Date.now());
+    } catch {
+      setFail(true);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    void run();
+    const id = window.setInterval(() => void run(), 10 * 60000);
+    return () => clearInterval(id);
+  }, []);
+
+  const names = tl('btMetrics');
+  const vals: (string | null)[] = fail ? [] : m ? [
+    `${m.winRate.toFixed(1)}%`,
+    m.profitFactor === Infinity ? '∞' : m.profitFactor.toFixed(2),
+    `${m.maxDrawdownPct.toFixed(1)}%`,
+    `$${m.expectancy.toFixed(0)}`,
+    m.sharpe.toFixed(2),
+    String(m.trades),
+  ] : [];
+
   return (
     <section className="sec alt">
       <div className="wrap">
-        <Reveal><div className="kicker">{t('btK')}</div><h2>{t('btH')}</h2><p className="lead narrow">{t('btLead')}</p></Reveal>
-        <div className="grid3">{tl('btMetrics').map((x: string, i: number) => <Reveal key={x} delay={(i % 3) * 0.06}><div className="card metric-c"><div className="metric-name">{x}</div><div className="metric-ph">— — —</div></div></Reveal>)}</div>
-        <Reveal delay={0.1}><div className="example-tag">{t('exampleTag')}</div></Reveal>
+        <Reveal><div className="kicker">{t('btK')}</div><h2>{t('btH')}</h2><p className="lead narrow">{t('btLead')}</p>
+          <div className="live-badge"><span className="live-dot" />{t('liveBadge')} — {t('symbolLabel')}</div>
+        </Reveal>
+        <div className="grid3">
+          {names.map((x: string, i: number) => (
+            <Reveal key={x} delay={(i % 3) * 0.06}>
+              <div className="card metric-c">
+                <div className="metric-name">{x}</div>
+                <div className={`metric-val ${fail ? 'bad' : ''}`}>{fail ? t('dataUnavailable') : m ? vals[i] : '…'}</div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={0.1}>
+          <div className="bt-live-row">
+            <button className="btn ghost sm" disabled={busy} onClick={() => void run()}>{busy ? '…' : t('recalc')}</button>
+            {at > 0 && !busy && <span className="small muted">{t('lastCalc')}: {new Date(at).toLocaleTimeString()}</span>}
+            {!m && !fail && <span className="small muted">{t('computing')}</span>}
+          </div>
+          <div className="example-tag">{t('exampleTag')}</div>
+        </Reveal>
       </div>
     </section>
   );
