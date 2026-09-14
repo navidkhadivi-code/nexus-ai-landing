@@ -189,7 +189,7 @@ const T: Record<string, { en: string; fa: string }> = {
   tgT: { en: 'TELEGRAM — @persiantrade2025', fa: 'تلگرام — @persiantrade2025' },
   tgD: { en: 'Fastest way: orders, payment confirmation and support.', fa: 'سریع‌ترین راه: ثبت سفارش، تأیید پرداخت و پشتیبانی.' },
   mailT: { en: 'EMAIL — trade@ipeset.com', fa: 'ایمیل — trade@ipeset.com' },
-  mailD: { en: 'Formal requests, invoices and documents.', fa: 'درخواست‌های رسمی، فاکتور و مدارک.' },
+  mailD: { en: 'Formal collaboration requests & sending documents.', fa: 'درخواست‌های رسمی همکاری، ارسال مدارک.' },
   tgBtn: { en: 'MESSAGE ON TELEGRAM', fa: 'پیام در تلگرام' },
   mailBtn: { en: 'SEND EMAIL', fa: 'ارسال ایمیل' },
   ftrContact: { en: 'Contact', fa: 'ارتباط با ما' },
