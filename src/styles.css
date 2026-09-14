@@ -299,3 +299,5 @@ html[dir='rtl'] .ob-a i, html[dir='rtl'] .ob-b i { inset: 0 0 0 auto; }
 .contact-c h3 { font-size: 14.5px; letter-spacing: .5px; }
 .contact-c p { margin-bottom: 18px; }
 .contact-c .btn { pointer-events: none; }
+.tg-ic { width: 15px; height: 15px; vertical-align: -3px; border-radius: 50%; }
+.c-ic img { width: 58px; height: 58px; }

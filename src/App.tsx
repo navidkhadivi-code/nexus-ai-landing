@@ -650,7 +650,7 @@ function Contact({ t }: any) {
         <div className="grid3" style={{ gridTemplateColumns: '1fr 1fr', maxWidth: 860 }}>
           <Reveal>
             <a className="card contact-c" href="https://t.me/persiantrade2025" target="_blank" rel="noopener noreferrer">
-              <div className="c-ic">✈️</div>
+              <div className="c-ic"><img src="./telegram.svg" alt="Telegram" /></div>
               <h3>{t('tgT')}</h3><p>{t('tgD')}</p>
               <span className="btn primary sm">{t('tgBtn')}</span>
             </a>
@@ -680,7 +680,7 @@ function Foot({ t, tl }: any) {
         <div className="ftr-col"><b>Product</b>{nav.map(([h, k]) => <a key={h} href={h}>{t(k)}</a>)}</div>
         <div className="ftr-col"><b>Legal</b>{tl('legal').map((x: string) => <a key={x} href="#faq">{x}</a>)}</div>
         <div className="ftr-col"><b>{t('ftrContact')}</b>
-          <a href="https://t.me/persiantrade2025" target="_blank" rel="noopener noreferrer">✈️ Telegram — @persiantrade2025</a>
+          <a href="https://t.me/persiantrade2025" target="_blank" rel="noopener noreferrer"><img src="./telegram.svg" className="tg-ic" alt="" /> Telegram — @persiantrade2025</a>
           <a href="mailto:trade@ipeset.com">✉️ trade@ipeset.com</a>
           <a href={TERMINAL}>{t('enterPanel')}</a>
         </div>
