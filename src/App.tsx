@@ -174,6 +174,17 @@ const T: Record<string, { en: string; fa: string }> = {
   ftrTag: { en: 'AI-POWERED TRADING INTELLIGENCE', fa: 'هوش معاملاتی ارز دیجیتال با AI' },
   legal: { en: 'Terms|Privacy|Risk Disclosure', fa: 'قوانین|حریم خصوصی|افشای ریسک' },
   disclaimer: { en: 'PersianTrade provides market analysis, trading intelligence and technology tools. It does not guarantee profits or investment returns. Cryptocurrency trading involves significant risk. Users are responsible for their own trading decisions.', fa: 'پرشین‌ترید ابزار تحلیل بازار، هوش معاملاتی و فناوری ارائه میدهد و سود یا بازده سرمایه را تضمین نمیکند. معامله ارز دیجیتال ریسک قابل‌توجهی دارد و مسئولیت تصمیمات معاملاتی با کاربر است.' },
+
+  contactK: { en: 'CONTACT', fa: 'ارتباط با ما' },
+  contactH: { en: 'WE ARE ONE MESSAGE AWAY.', fa: 'فقط یک پیام فاصله داری.' },
+  contactLead: { en: 'For subscription purchase, renewal, deposit address and support — reach us directly. Average response time: under 1 hour during working hours.', fa: 'برای خرید اشتراک، تمدید، دریافت آدرس واریز و پشتیبانی — مستقیم با ما در ارتباط باشید. میانگین زمان پاسخ: کمتر از یک ساعت در ساعات کاری.' },
+  tgT: { en: 'TELEGRAM — @persiantrade2025', fa: 'تلگرام — @persiantrade2025' },
+  tgD: { en: 'Fastest way: orders, payment confirmation and support.', fa: 'سریع‌ترین راه: ثبت سفارش، تأیید پرداخت و پشتیبانی.' },
+  mailT: { en: 'EMAIL — trade@ipeset.com', fa: 'ایمیل — trade@ipeset.com' },
+  mailD: { en: 'Formal requests, invoices and documents.', fa: 'درخواست‌های رسمی، فاکتور و مدارک.' },
+  tgBtn: { en: 'MESSAGE ON TELEGRAM', fa: 'پیام در تلگرام' },
+  mailBtn: { en: 'SEND EMAIL', fa: 'ارسال ایمیل' },
+  ftrContact: { en: 'Contact', fa: 'ارتباط با ما' },
 };
 
 function useLang(): [L, (l: L) => void, (k: string) => string, (s: string) => string[], (k: string) => string[][]] {
@@ -199,7 +210,7 @@ function Reveal({ children, delay = 0, className = '' }: { children: React.React
 
 function Header({ lang, setLang, t }: any) {
   const [open, setOpen] = useState(false);
-  const nav = [['#home', 'navHome'], ['#how', 'navHow'], ['#ai', 'navAI'], ['#features', 'navFeatures'], ['#risk', 'navRisk'], ['#tech', 'navTech'], ['#faq', 'navFaq']];
+  const nav = [['#home', 'navHome'], ['#how', 'navHow'], ['#ai', 'navAI'], ['#features', 'navFeatures'], ['#risk', 'navRisk'], ['#tech', 'navTech'], ['#faq', 'navFaq'], ['#contact', 'ftrContact']];
   return (
     <header className="hdr">
       <div className="hdr-in">
@@ -631,6 +642,32 @@ function Faq({ t, tr }: any) {
   );
 }
 
+function Contact({ t }: any) {
+  return (
+    <section id="contact" className="sec">
+      <div className="wrap">
+        <Reveal><div className="kicker">{t('contactK')}</div><h2>{t('contactH')}</h2><p className="lead narrow">{t('contactLead')}</p></Reveal>
+        <div className="grid3" style={{ gridTemplateColumns: '1fr 1fr', maxWidth: 860 }}>
+          <Reveal>
+            <a className="card contact-c" href="https://t.me/persiantrade2025" target="_blank" rel="noopener noreferrer">
+              <div className="c-ic">✈️</div>
+              <h3>{t('tgT')}</h3><p>{t('tgD')}</p>
+              <span className="btn primary sm">{t('tgBtn')}</span>
+            </a>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <a className="card contact-c" href="mailto:trade@ipeset.com">
+              <div className="c-ic">✉️</div>
+              <h3>{t('mailT')}</h3><p>{t('mailD')}</p>
+              <span className="btn ghost sm">{t('mailBtn')}</span>
+            </a>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Foot({ t, tl }: any) {
   const nav = [['#how', 'navHow'], ['#ai', 'navAI'], ['#features', 'navFeatures'], ['#risk', 'navRisk'], ['#tech', 'navTech'], ['#faq', 'navFaq']];
   return (
@@ -642,6 +679,11 @@ function Foot({ t, tl }: any) {
         </div>
         <div className="ftr-col"><b>Product</b>{nav.map(([h, k]) => <a key={h} href={h}>{t(k)}</a>)}</div>
         <div className="ftr-col"><b>Legal</b>{tl('legal').map((x: string) => <a key={x} href="#faq">{x}</a>)}</div>
+        <div className="ftr-col"><b>{t('ftrContact')}</b>
+          <a href="https://t.me/persiantrade2025" target="_blank" rel="noopener noreferrer">✈️ Telegram — @persiantrade2025</a>
+          <a href="mailto:trade@ipeset.com">✉️ trade@ipeset.com</a>
+          <a href={TERMINAL}>{t('enterPanel')}</a>
+        </div>
       </div>
       <div className="wrap ftr-disc">{t('disclaimer')}</div>
     </footer>
@@ -654,7 +696,7 @@ export default function App() {
     <>
       <Header lang={lang} setLang={setLang} t={t} />
       <main>
-        <Hero t={t} /><WhatIs t={t} /><Problem t={t} tl={tl} /><HowItWorks t={t} tl={tl} /><Agents t={t} tr={tr} /><Perspectives t={t} tr={tr} /><NoTrade t={t} tl={tl} /><Risk t={t} tl={tl} /><RealData t={t} tl={tl} /><SeeBeyond t={t} tl={tl} /><MultiTF t={t} tl={tl} /><Paper t={t} tl={tl} /><Backtest t={t} tl={tl} /><Live t={t} tl={tl} /><Security t={t} tr={tr} /><WhoFor t={t} tr={tr} /><Advantage t={t} tl={tl} /><Workflow t={t} tr={tr} /><Shots t={t} /><FinalCTA t={t} /><Faq t={t} tr={tr} />
+        <Hero t={t} /><WhatIs t={t} /><Problem t={t} tl={tl} /><HowItWorks t={t} tl={tl} /><Agents t={t} tr={tr} /><Perspectives t={t} tr={tr} /><NoTrade t={t} tl={tl} /><Risk t={t} tl={tl} /><RealData t={t} tl={tl} /><SeeBeyond t={t} tl={tl} /><MultiTF t={t} tl={tl} /><Paper t={t} tl={tl} /><Backtest t={t} tl={tl} /><Live t={t} tl={tl} /><Security t={t} tr={tr} /><WhoFor t={t} tr={tr} /><Advantage t={t} tl={tl} /><Workflow t={t} tr={tr} /><Shots t={t} /><FinalCTA t={t} /><Faq t={t} tr={tr} /><Contact t={t} />
       </main>
       <Foot t={t} tl={tl} />
     </>

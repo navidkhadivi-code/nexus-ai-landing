@@ -292,3 +292,10 @@ html[dir='rtl'] .shot-tag { font-family: 'Vazirmatn', sans-serif; letter-spacing
 html[dir='rtl'] .ob-a i, html[dir='rtl'] .ob-b i { inset: 0 0 0 auto; }
 .ob-a span, .ob-b span { position: relative; }
 .ob-mid { text-align: center; font-weight: 800; color: var(--tx); padding: 6px; border-block: 1px solid var(--line); }
+
+/* contact */
+.contact-c { display: block; text-align: center; padding: 38px 26px; }
+.contact-c .c-ic { font-size: 36px; margin-bottom: 14px; }
+.contact-c h3 { font-size: 14.5px; letter-spacing: .5px; }
+.contact-c p { margin-bottom: 18px; }
+.contact-c .btn { pointer-events: none; }
