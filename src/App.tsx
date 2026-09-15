@@ -222,7 +222,7 @@ function Header({ lang, setLang, t }: any) {
   return (
     <header className="hdr">
       <div className="hdr-in">
-        <a href="#home" className="logo"><img src="./logo.png" alt="PersianTrade" className="logo-img" /></a>
+        <a href="#home" className="logo"><img src="./logo-128.png" alt="PersianTrade" className="logo-img" width={34} height={34} /></a>
         <nav className="nav">{nav.map(([h, k]) => <a key={h} href={h}>{t(k)}</a>)}</nav>
         <div className="hdr-cta">
           <button className="lang-toggle" onClick={() => setLang(lang === 'fa' ? 'en' : 'fa')}>{lang === 'fa' ? 'ENGLISH' : 'فارسی'}</button>
@@ -249,7 +249,7 @@ function Hero({ t }: any) {
       <div className="wrap hero-grid">
         <div>
           <Reveal>
-            <img src="./logo.png" alt="" className="hero-logo" />
+            <img src="./logo-256.png" alt="" className="hero-logo" width={120} height={120} fetchPriority="high" />
             <div className="kicker">{t('heroK')}</div>
             <h1 className="h-xl">{t('h1a')}<br />{t('h1b')}{t('h1c') && <><br /><span className="grad">{t('h1c')}</span></>}</h1>
             <p className="lead">{t('heroLead')}</p>
@@ -672,7 +672,7 @@ function FinalCTA({ t }: any) {
       <div className="final-glow" />
       <div className="wrap center">
         <Reveal>
-          <img src="./logo.png" alt="PersianTrade" className="hero-logo big" />
+          <img src="./logo-256.png" alt="PersianTrade" className="hero-logo big" width={150} height={150} loading="lazy" />
           <h2 className="h-xl center-h">{t('ctaH1')}<br />{t('ctaH2')}<br /><span className="grad">{t('ctaH3')}</span></h2>
           <p className="lead narrow center-mt">{t('ctaLead')}</p>
           <div className="row-gap center-row">
@@ -737,7 +737,7 @@ function Foot({ t, tl }: any) {
     <footer className="ftr">
       <div className="wrap ftr-grid">
         <div>
-          <img src="./logo.png" alt="PersianTrade" className="foot-logo" />
+          <img src="./logo-128.png" alt="PersianTrade" className="foot-logo" width={52} height={52} loading="lazy" />
           <p className="ftr-tag">{t('ftrTag')}</p>
         </div>
         <div className="ftr-col"><b>Product</b>{nav.map(([h, k]) => <a key={h} href={h}>{t(k)}</a>)}</div>
